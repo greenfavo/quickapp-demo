@@ -1,0 +1,45 @@
+<script>
+  /**
+   * 应用级别的配置，供所有页面公用
+   */
+  // 脚本：regenerator.js
+  // 全局引用
+  const globalRef = global.__proto__ || global
+
+  // global注入regeneratorRuntime
+  globalRef.regeneratorRuntime = require('babel-runtime/regenerator')
+
+  // asyncNatives.js
+  import nativeFetch from '@system.fetch'
+  import { showMenu, createShortcut } from './util'
+
+  const natives = {
+    /**
+     * 网络请求
+     * @param options
+     * @return {Promise}
+     */
+    async fetch (options) {
+      const p1 = new Promise((resolve, reject) => {
+        options.success = function (data, code) {
+          data = JSON.parse(data.data)
+          resolve({ data, code })
+        }
+        options.fail = function (data, code) {
+          reject({ data, code })
+        }
+        nativeFetch.fetch(options)
+      })
+      return p1
+    }
+  }
+  // 注入到全局
+  const hookTo = global.__proto__ || global
+  hookTo.natives = natives
+
+  export default {
+    showMenu,
+    createShortcut,
+    natives
+  }
+</script>

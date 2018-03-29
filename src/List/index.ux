@@ -1,0 +1,65 @@
+<template>
+  <list class="list-main" onscrollbottom="loadData">
+    <list-item class="list-item" type="review" for="{{list}}">
+      <image  class ="art-pic" 
+        src="{{getThumbUrl($item.cinecism_info.cover_url, 350, 200)}}"
+        onclick="{{goDetail($item.cinecism_info.id)}}"
+        alt="../Common/assets/img/default.png">
+      </image>
+      <text class="art-title">{{$item.cinecism_info.title}}</text>
+    </list-item>
+    <!-- 加载更多，type属性自定义命名为loadMore -->
+    <list-item type="loadMore" class="load-more" show="{{hasMore}}">
+      <progress type="circular" class="round"></progress>
+      <text>加载更多</text>
+    </list-item>
+  </list>
+</template>
+<style src="../Common/assets/css/article.css"></style>
+<script>
+  import router from '@system.router'
+  import api from '../Common/api/index.js'
+  import { getThumbUrl } from '../util'
+
+  export default {
+    data: {
+      hasMore: true,
+      size: 10,
+      cursor: 0,
+      loading: false,
+      list: []
+    },
+    onInit () {
+      this.loadData()
+    },
+    onMenuPress() {
+      this.$app.showMenu()
+    },
+    async loadData () {
+      if (!this.loading && this.hasMore) {
+        try {
+          this.loading = true
+          let data = await api.getList({
+            cursor: this.cursor,
+            size: this.size
+          })
+          this.loading = false
+
+          this.list = [...this.list, ...data.list]
+
+          this.hasMore = data.is_more
+          this.cursor = data.list[data.list.length - 1].cinecism_info.cursor || 0
+        } catch (error) {
+          console.error(error)
+        }
+      }
+    },
+    getThumbUrl,
+    goDetail (id) {
+      router.push({
+        uri: '/Detail',
+        params: { id }
+      })
+    }
+  }
+</script>

@@ -1,0 +1,29 @@
+.list-main {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0 10px;
+}
+.list-item {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+}
+.art-pic {
+  width: 350px;
+  height: 200px;
+  margin-right: 10px;
+}
+.art-title {
+  flex-grow: 1;
+}
+.load-more {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+.round {
+  width: 50px;
+  height: 50px;
+}

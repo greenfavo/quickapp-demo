@@ -1,0 +1,36 @@
+<template>
+  <!-- template里只能有一个根节点 -->
+  <div>
+    <web src="{{review.body_url}}" id="web"></web>
+  </div>
+</template>
+
+<script>
+  import api from '../Common/api/index.js'
+
+  export default {
+    data: {
+      id: '',
+      review: {}
+    },
+    /**
+     * 当用户点击菜单按钮时触发，调用app中定义的方法showMenu
+     * 注意：使用加载器测试`创建桌面快捷方式`功能时，请先在`系统设置`中打开`应用加载器`的`桌面快捷方式`权限
+     */
+    onMenuPress() {
+      this.$app.showMenu()
+    },
+    onInit () {
+      this.getReview()
+    },
+    async getReview () {
+      try {
+        let data = await api.getReview(this.id)
+        this.review = data.cinecism_info || {}
+        this.$page.setTitleBar({ text: this.review.title })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+</script>
